@@ -1,0 +1,8 @@
+1/11/2021
+COMPLETED:
+database tables created
+mysql2 and express packages installed
+connected application to database
+express listening succesfully to port 3000
+NEXT:
+BUILD APP

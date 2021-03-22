@@ -1,0 +1,38 @@
+<%- include('../partials/head') %>
+    <div class="container text-center gibMargin">
+        <div class="row justify-content-center">
+            <form action="/">
+                <button type="submit" class="btn goHome">
+                    HOME
+                </button>
+            </form>
+        </div>
+    </div>
+    <p class="text-center fs-1">Select a customer to check out by using the search form below:</p>
+    <div class="container text-center formEntry">
+        <form method="GET" action="checkout">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <label for="customerSearchBy" class="col-form-label">Search By:</label>
+                </div>
+                <div class="col-auto">
+                    <select id="customerSearchBy" name="searchedBy" class="form-select" aria-label="Customer Search By Selection">
+                        <option selected>Phone Number</option>
+                        <option value="Name">Name</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <label for="customerSearchFor" class="col-form-label">Search For:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" name="searchedFor" class="form-control form-control-lg" placeholder="Customer Information" id="customerSearchFor" required>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <button type="submit" class="btn">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+<%- include('../partials/end') %>

@@ -1,0 +1,115 @@
+<%- include('../partials/head') %>
+    <div class="container text-center gibMargin">
+        <div class="row justify-content-center">
+            <form action="/">
+                <button type="submit" class="btn goHome">
+                    HOME
+                </button>
+            </form>
+        </div>
+    </div>
+    <p class="text-center fs-1">Search for products to add them to the cart:</p>
+    <div class="container text-center formEntry">
+        <form method="GET" action="<%= cart_id %>">
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <label for="productSearchBy" class="col-form-label">Search By:</label>
+                </div>
+                <div class="col-auto">
+                    <select id="productSearchBy" name="searchedBy" class="form-select" aria-label="Customer Search By Selection">
+                        <option selected>Name</option>
+                        <option value="Code">Code</option>
+                        <option value="Name">Category</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <label for="productSearchFor" class="col-form-label">Search For:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="text" name="searchedFor" class="form-control form-control-lg" placeholder="Product Information" id="productSearchFor" required>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-auto">
+                    <button type="submit" class="btn">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <% if(valEntered) { %>
+    <div class="container resultsField">
+        <p class="fs-2">Results:</p>
+        <div class="row text-center justify-content-center">
+        <% if(len === 0) { %>
+                <p class="fs-1">No products were found.</p>
+        <% } else { 
+            for(let result of results) { %>
+            <div class="col-12 resultBox">
+                <div class="row">
+                    <div class="col">
+                        Product Name:
+                    </div>
+                    <div class="col">
+                        Size:
+                    </div>
+                    <div class="col">
+                        Retail Price:
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <%= result.P_NAME %>
+                    </div>
+                    <div class="col">
+                        <%= result.P_SIZE %> ml
+                    </div>
+                    <div class="col">
+                        $<%= result.P_PRICE %>
+                    </div>
+                </div>
+                <div class="row justify-content-center" >
+                    <button class="btn customizeBtn" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= result.P_ID %>" 
+                        aria-expanded="false" aria-controls="collapse<%= result.P_ID %>">
+                        Customize
+                    </button>
+                </div>
+                <form method="POST" action="/checkout/<%= customer_id %>/<%= cart_id %>" >
+                    <div class="row collapse" id="collapse<%= result.P_ID %>">
+                        <div class="row justify-content-center" >
+                            <div class="col-4">
+                                <label class="form-label" style="font-size: 32px;">Unopened Bottles: <%= result.P_QNTY %></label>
+                                <label class="form-label" style="font-size: 32px;">Bottles to add:</label>
+                                <input type="number" id="closedQnty" name="closedQnty" min="0" max="<%= result.P_QNTY %>" style="width: 25%;">
+                                <input type="hidden" id="prodId" name="prodId" value="<%= result.P_ID %>">
+                            </div>
+                            <div class="col-4">
+                                <label class="form-label" style="font-size: 32px;">Opened Bottles: <%= result.P_OPENED %></label>
+                                <label class="form-label" style="font-size: 32px;">Drops to add:</label>
+                                
+                                <% if(result.P_OPENED > 0) { %>
+                                <input type="number" id="openedQnty" name="openedQnty" min="0" max="100" style="width: 25%;">
+                                <% } else { %>
+                                <input type="number" id="openedQnty" name="openedQnty" min="0" max="0" style="width: 25%;">
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <button type="submit" class="btn customizeBtn">Add to Cart</button>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+        <% } } %>
+        </div>
+    </div>
+    <% } %>
+
+    <% if(numItemsInCart > 0) { %>
+        <form method="GET" action="/checkout/<%= customer_id %>/<%= cart_id %>/cart">
+            <button id="checkoutBtn" class="btn">Checkout</button>
+        </form>
+    <% } else { %>
+        <button id="checkoutBtn" class="btn" disabled>Checkout</button>
+    <% } %>
+<%- include('../partials/end') %>

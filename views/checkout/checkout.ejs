@@ -1,0 +1,67 @@
+<%- include('../partials/head') %>
+
+<div class="container text-center gibMargin">
+    <div class="row justify-content-center">
+        <form action="/">
+            <button type="submit" class="btn goHome">
+                HOME
+            </button>
+        </form>
+    </div>
+</div>
+<div class="container text-center">
+    <h1>Customer:</h1>
+    <div class="row">
+        <div class="col formEntry">
+            <div class="row">
+                <div class="col">Name:</div>
+                <div class="col">Phone:</div>
+                <div class="col">Address:</div>
+            </div>
+            <div class="row">
+                <div class="col"><%= cust[0].NAME %></div>
+                <div class="col"><%= cust[0].PHONE %></div>
+                <div class="col"><%= cust[0].ADDR %></div>
+            </div>
+        </div>
+    </div>
+    <h1>Cart:</h1>
+    <% for(let i = 0; i < cart.length; i++) 
+    {
+        if (cart[i].OPENED) { 
+            var price = cart[i].QUANTITY * prods[i].P_PER_AMNT %>
+        <div class="row">
+            <div class="col formEntry">
+                <div class="row">
+                    <div class="col">Product Name:</div>
+                    <div class="col">Drops:</div>
+                    <div class="col">Total:</div>
+                </div>
+                <div class="row">
+                    <div class="col"><%= prods[i].P_NAME %></div>
+                    <div class="col"><%= cart[i].QUANTITY %></div>
+
+                    <div class="col">$<%= price %></div>
+                </div>
+            </div>
+        </div>
+        <% } else {
+            var price = cart[i].QUANTITY * prods[i].P_PRICE %>
+            <div class="row">
+                <div class="col formEntry">
+                    <div class="row">
+                        <div class="col">Product Name:</div>
+                        <div class="col">Bottles:</div>
+                        <div class="col">Total:</div>
+                    </div>
+                    <div class="row">
+                        <div class="col"><%= prods[i].P_NAME %></div>
+                        <div class="col"><%= cart[i].QUANTITY %> X $<%= prods[i].P_PRICE %></div>
+                        <div class="col">$<%= price %></div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    <% } %> 
+</div>
+<%- include('../partials/end') %>

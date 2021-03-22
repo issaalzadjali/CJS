@@ -1,0 +1,87 @@
+.homeButton {
+    background-color: #2ABED8;
+    color: white;
+    font-size: 40px;
+    margin-top: 50px;
+    width: 365px;
+    height: 145px;
+}
+
+.goHome {
+    background-color: #2ABED8;
+}
+
+.gibMargin {
+    margin-top: 2%;
+}
+
+button:focus {
+    outline:0;
+}
+
+/* ===============  FORM CSS    =============== */
+
+.formEntry {
+    background-color: #2ABED8;
+    font-size: 32px;
+    padding: 2% 0 2% 0;
+}
+
+.formEntry select, .formEntry input {
+    font-size: 32px;
+}
+
+.formEntry button {
+    margin-top: 40%;
+    background-color: white;
+    font-size: 32px;
+}
+
+/* ===============  RESULTS CSS    =============== */
+
+.resultsField {
+    margin-top: 2%;
+    font-size: 32px;
+}
+
+.resultsField .card {
+    margin: 1% 0 1% 0;
+    width: 100%;
+}
+
+.resultsField a {
+    text-decoration: none;
+    background-color: white;
+    width: 60%;
+    color: black;
+    transition: 5s;
+}
+
+.resultsField a :hover {
+    background-color: #2ABED8;
+}
+
+.resultBox {
+    border: solid black;
+    width: 80%;
+}
+
+.customizeBtn {
+    border: solid black 2px;
+    margin: 2% 0 2% 0;
+    font-size: 32px;
+    width: 20%;
+}
+
+#checkoutBtn {
+    position: fixed;
+    bottom: 2%;
+    right: 2%;
+    font-size: 32px;
+    border: solid black 2px;
+}
+
+#checkoutBtn a:hover {
+    background-color: #2ABED8;
+    color: white;
+}
