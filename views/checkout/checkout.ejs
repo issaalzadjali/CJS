@@ -9,7 +9,7 @@
         </form>
     </div>
 </div>
-<div class="container text-center">
+<div class="container text-center" style="width: 70%;">
     
     <br>
     <h1>Customer:</h1>
@@ -34,8 +34,8 @@
     {
         if (cart[i].OPENED) { 
             var price = cart[i].QUANTITY * prods[i].P_PER_AMNT %>
-        <div class="row">
-            <div class="col formEntry">
+        <div class="row cartItem">
+            <div class="col">
                 <div class="row">
                     <div class="col">Product Name:</div>
                     <div class="col">Drops:</div>
@@ -51,8 +51,8 @@
         </div>
         <% } else {
             var price = cart[i].QUANTITY * prods[i].P_PRICE %>
-            <div class="row">
-                <div class="col formEntry">
+            <div class="row cartItem">
+                <div class="col">
                     <div class="row">
                         <div class="col">Product Name:</div>
                         <div class="col">Bottles:</div>
