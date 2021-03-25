@@ -401,9 +401,7 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
                                         res.render('checkout/checkout.ejs', {pagename, cust, cart, prods});
                                     }
                                 )
-                            }
-                            
-                            
+                            }   
                         }
                         else
                             res.redirect(`/checkout/${customer_id}`);
@@ -413,8 +411,7 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
             else
                 res.redirect(`/checkout/${customer_id}`);
         }
-    )
-   
+    )  
 })
 
 app.listen(8080, () => {
