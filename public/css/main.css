@@ -45,6 +45,18 @@ button:focus {
     color: white;
 }
 
+.cartItemMenu {
+    text-decoration: underline;
+}
+
+.cartItemButton {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+}
 /* ===============  RESULTS CSS    =============== */
 
 .resultsField {
@@ -92,4 +104,8 @@ button:focus {
 #checkoutBtn a:hover {
     background-color: #2ABED8;
     color: white;
+}
+
+hr {
+    border:  solid black 2px;
 }
