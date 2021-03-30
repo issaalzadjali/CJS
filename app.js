@@ -370,19 +370,18 @@ async function getProds(cart) {
         for(let i = 0; i < cart.length; i++)
             {
                 connection.query(
-                    'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
-                    parseInt(cart[i].P_ID),
-                    function(err, results){
-                        if(err)
-                            throw new Error(err);
-                        else if(results.length > 0)
-                        {
-                            prods[i] = results;
-                            console.log("in here:", prods);
-                        }
-
+                'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
+                parseInt(cart[i].P_ID),
+                function (err, results) {
+                    if (err)
+                        throw new Error(err);
+                    else if (results.length > 0) {
+                        prods[i] = results;
+                        console.log("in here:", prods);
                     }
-                )
+
+                }
+            )
             }
             return prods;
     }
@@ -419,7 +418,6 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
                             cart = results;
                             async () => {
                                 prods = await getProds(cart);
-                                
                             }
                             
                             console.log("out here:", prods);
