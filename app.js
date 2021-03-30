@@ -6,11 +6,15 @@ const bodyParser = require("body-parser");
 const path = require('path');
 const { connect } = require('http2');
 const { query } = require('express');
+const methodOverride = require('method-override');
+const ejsLint = require('ejs-lint');
+
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true}));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
+app.use(methodOverride('_method'));
 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
@@ -18,7 +22,7 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'z1x2c3v4b5',
     database: 'CJSDB'
 });
 
@@ -359,6 +363,31 @@ app.post('/checkout/:customer_id/:cart_id', (req, res)  => {
     res.redirect(`/checkout/${customer_id}/${cart_id}`);
 })
 
+//helper async function for view cart
+async function getProds(cart) {
+    if(cart) {
+        var prods = {};
+        for(let i = 0; i < cart.length; i++)
+            {
+                connection.query(
+                    'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
+                    parseInt(cart[i].P_ID),
+                    function(err, results){
+                        if(err)
+                            throw new Error(err);
+                        else if(results.length > 0)
+                        {
+                            prods[i] = results;
+                            console.log("in here:", prods);
+                        }
+
+                    }
+                )
+            }
+            return prods;
+    }
+      
+}
 //view cart
 
 app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
@@ -368,6 +397,7 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
     var cust;
     var cart;
     var prods = [];
+    var success = false;
 
     connection.query(
         'SELECT * FROM CUSTOMERS_LOOKUP WHERE C_ID = ?',
@@ -387,21 +417,14 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
                         else if(results.length > 0)
                         {
                             cart = results;
-                            for(let i = 0; i < cart.length; i++)
-                            {
-                                connection.query(
-                                    'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
-                                    parseInt(cart[i].P_ID),
-                                    function(err, results){
-                                        if(err)
-                                            console.log(err);
-                                        else if(results.length > 0)
-                                            prods.push(results[0]);
-                                        
-                                        res.render('checkout/checkout.ejs', {pagename, cust, cart, prods});
-                                    }
-                                )
-                            }   
+                            async () => {
+                                prods = await getProds(cart);
+                                
+                            }
+                            
+                            console.log("out here:", prods);
+                            res.render('checkout/checkout.ejs', {pagename, cust, cart, prods, customer_id, cart_id}); 
+                            
                         }
                         else
                             res.redirect(`/checkout/${customer_id}`);
@@ -412,6 +435,22 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
                 res.redirect(`/checkout/${customer_id}`);
         }
     )  
+})
+
+app.delete('/checkout/:customer_id/:cart_id/cart', (req, res) => {
+    const { customer_id } = req.params;
+    const { cart_id } = req.params;
+    var product_id = parseInt(req.body.prodId);
+    connection.query('DELETE FROM CART_ITEMS WHERE ID = ? AND P_ID = ?',
+    [parseInt(cart_id), product_id],
+    function(err, results){
+        if (err)
+            throw err;
+        else {
+            console.log("Succesfully deleted");
+            res.redirect(`/checkout/${customer_id}/${cart_id}/cart`);
+        }
+    })
 })
 
 app.listen(8080, () => {
