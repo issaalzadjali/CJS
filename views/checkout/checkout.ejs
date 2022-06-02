@@ -32,28 +32,31 @@
     <h1>Cart:</h1>
     <% for(let i = 0; i < cart.length; i++) {
         if(prods[i])
-        if (cart[i].OPENED) {
-            var price = cart[i].QUANTITY * prods[i].P_PER_AMNT %>
+        if (cart[i].OPENED) { %>
         <div class="row cartItem">
             <div class="col">
                 <div class="row" style="padding: 1% 0 1% 0;">
-                    <div class="col">Product Name:</div>
-                    <div class="col">Drops:</div>
-                    <div class="col">Total:</div>
+                    <div class="col" style="color: black">Product Name:</div>
+                    <div class="col" style="color: black">Drops:</div>
+                    <div class="col" style="color: black">Total:</div>
                 </div>
                 <div class="row" style="padding: 1% 0 1% 0;">
                     <div class="col"><%= prods[i].P_NAME %></div>
-                    <div class="col"><%= cart[i].QUANTITY %></div>
-                    <div class="col">$<%= price %></div>
+                    <div class="col"><%= cart[i].QUANTITY %> at $<%= prods[i].P_PER_AMNT %>/drop</div>
+                    <div class="col">$<%= prices[i] %></div>
                 </div>
             </div>
             <div class="row cartItemMenu" style="padding: 1% 1% 1% 1%;">
-                <div class="col-auto me-auto">Remove</div>
-                <div class="col-auto">Wholesale</div>
+                <div class="col-auto me-auto">
+                    <form action="/checkout/<%= customer_id %>/<%= cart_id %>/cart?_method=DELETE" method="POST">
+                        <button class="cartItemButton" type="submit">Remove</button>
+                        <input type="hidden" id="prodId" name="prodId" value="<%= prods[i].P_ID %>">
+                        <input type="hidden" id="opened" name="opened" value="1">
+                    </form>
+                </div>
             </div>
         </div>
-        <% } else {
-            var price = cart[i].QUANTITY * prods[i].P_PRICE %>
+        <% } else {  %>
             <div class="row cartItem">
                 <div class="col">
                     <div class="row" style="padding: 0 0 1% 0;">
@@ -63,14 +66,15 @@
                     </div>
                     <div class="row" style="padding: 1% 0 1% 0;">
                         <div class="col"><%= prods[i].P_NAME %></div>
-                        <div class="col"><%= cart[i].QUANTITY %> X $<%= prods[i].P_PRICE %></div>
-                        <div class="col">$<%= price %></div>
+                        <div class="col"><%= cart[i].QUANTITY %> at $<%= prods[i].P_PRICE %>/bottle</div>
+                        <div class="col">$<%= prices[i] %></div>
                     </div>
                     <div class="row cartItemMenu" style="padding: 1% 1% 1% 1%;">
                         <div class="col-auto me-auto">
                             <form action="/checkout/<%= customer_id %>/<%= cart_id %>/cart?_method=DELETE" method="POST">
                                 <button class="cartItemButton" type="submit">Remove</button>
                                 <input type="hidden" id="prodId" name="prodId" value="<%= prods[i].P_ID %>">
+                                <input type="hidden" id="opened" name="opened" value="0">
                             </form>
                         </div>
                         <div class="col-auto">Wholesale</div>
@@ -80,5 +84,8 @@
         <% } } %>
     <br>
     <hr>
+    <form>
+        <button type="submit" class="btn btn-primary mb-3">Add More Products</button>
+    </form>
 </div>
 <%- include('../partials/end') %>

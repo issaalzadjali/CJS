@@ -363,29 +363,31 @@ app.post('/checkout/:customer_id/:cart_id', (req, res)  => {
     res.redirect(`/checkout/${customer_id}/${cart_id}`);
 })
 
-//helper async function for view cart
-async function getProds(cart) {
-    if(cart) {
-        var prods = {};
-        for(let i = 0; i < cart.length; i++)
-            {
-                connection.query(
-                'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
-                parseInt(cart[i].P_ID),
-                function (err, results) {
-                    if (err)
-                        throw new Error(err);
-                    else if (results.length > 0) {
-                        prods[i] = results;
-                        console.log("in here:", prods);
-                    }
+function calculatePrices(cart, prods, prices, wholeSalePrices) {
+    var price = 0.0;
+    var prod;
 
-                }
-            )
+    if(cart && prods && cart.length == prods.length) {
+        for(var i = 0; i < cart.length; i++) {
+            
+            if(parseInt(cart[i].OPENED)) {
+
+                price = cart[i].QUANTITY * parseFloat(prods[i].P_PER_AMNT);
+                prices.push(price.toFixed(2));
+                
+                price = 0;
+                wholeSalePrices.push(price.toFixed(2));
+            } else {
+
+                price = cart[i].QUANTITY * parseFloat(prods[i].P_PRICE);
+                prices.push(price.toFixed(2));
+                
+                price = cart[i].QUANTITY * parseFloat(prods[i].P_WHOLESALE);
+                wholeSalePrices.push(price.toFixed(2));
             }
-            return prods;
+            
+        }
     }
-      
 }
 //view cart
 
@@ -397,6 +399,8 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
     var cart;
     var prods = [];
     var success = false;
+    var prices = [];
+    var wholeSalePrices = [];
 
     connection.query(
         'SELECT * FROM CUSTOMERS_LOOKUP WHERE C_ID = ?',
@@ -416,13 +420,24 @@ app.get('/checkout/:customer_id/:cart_id/cart', (req, res) => {
                         else if(results.length > 0)
                         {
                             cart = results;
-                            async () => {
-                                prods = await getProds(cart);
+                            for(var i = 0; i < cart.length; i++) {
+                                connection.query(
+                                    'SELECT * FROM PRODUCTS_LOOKUP WHERE P_ID = ?',
+                                    cart[i].P_ID,
+                                    function(err, results){
+                                        if (err)
+                                            console.log(err);
+                                        else {
+                                            prods.push(results[0]);
+                                        }
+                                    })
                             }
-                            
-                            console.log("out here:", prods);
-                            res.render('checkout/checkout.ejs', {pagename, cust, cart, prods, customer_id, cart_id}); 
-                            
+
+                            setTimeout(function(){
+                                calculatePrices(cart, prods, prices, wholeSalePrices);
+                                res.render('checkout/checkout.ejs', {pagename, cust, cart, prods, customer_id, cart_id, prices, wholeSalePrices}); 
+                            }, 10);
+                             
                         }
                         else
                             res.redirect(`/checkout/${customer_id}`);
@@ -439,8 +454,10 @@ app.delete('/checkout/:customer_id/:cart_id/cart', (req, res) => {
     const { customer_id } = req.params;
     const { cart_id } = req.params;
     var product_id = parseInt(req.body.prodId);
-    connection.query('DELETE FROM CART_ITEMS WHERE ID = ? AND P_ID = ?',
-    [parseInt(cart_id), product_id],
+    var opened = parseInt(req.body.opened);
+
+    connection.query('DELETE FROM CART_ITEMS WHERE ID = ? AND P_ID = ? AND OPENED = ?',
+    [parseInt(cart_id), product_id, opened],
     function(err, results){
         if (err)
             throw err;
